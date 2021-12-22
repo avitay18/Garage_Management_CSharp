@@ -33,8 +33,12 @@ namespace Ex03.GarageLogic
             }
             else
             {
-                //throw exception
+                throw new ValueOutOfRangeException(new Exception(), 0, MaxAirPressure - CurrentAirPressure);
             }
+        }
+        public void InflateTireToMax()
+        {
+            this.m_CurrentAirPressure = this.m_MaxAirPressure;
         }
     }
 }

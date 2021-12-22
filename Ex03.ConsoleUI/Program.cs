@@ -14,22 +14,7 @@ namespace Ex03.ConsoleUI
     {
         public static void Main()
         {
-            ////Vehicle newElectricCar = VehicleCreator.CreateNewVehicle(VehicleCreator.eVehicleType.ElectricCar);
-            ////Vehicle newFuelCar = VehicleCreator.CreateNewVehicle(VehicleCreator.eVehicleType.FuelCar);
-            ////Vehicle newElectricMotorcycle = VehicleCreator.CreateNewVehicle(VehicleCreator.eVehicleType.ElectricMotorcycle);
-            ////Vehicle newFuelMotorcycle = VehicleCreator.CreateNewVehicle(VehicleCreator.eVehicleType.FuelMotorcycle);
-
-            ////Vehicle newTruck = VehicleCreator.CreateNewVehicle(VehicleCreator.eVehicleType.Truck);
-
             UserInterface.Run(new Garage());
-            //UserInterface.AddNewVehicleToGarage();
-
-
-
-
-
-
-
         }
     }
 }

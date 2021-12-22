@@ -17,12 +17,39 @@ namespace Ex03.GarageLogic
             this.m_VehiclesDataInGarage = new List<VehicleData>();
         }
 
+        public List<Vehicle> VehiclesInGarage
+        {
+            get
+            {
+                return this.m_VehiclesInGarage;
+            }
+        }
+        public List<VehicleData> VehiclesDataInGarage
+        {
+            get
+            {
+                return this.m_VehiclesDataInGarage;
+            }
+        }
         public void AddVehicleToGarage(Vehicle newVehicle, VehicleData newCustomer)
         {
             this.m_VehiclesInGarage.Add(newVehicle);
             this.m_VehiclesDataInGarage.Add(newCustomer);
         }
+        internal string GetCustomerNameByLicense(string i_LicenseNumber)
+        {
+            int i = 0;
+            foreach(Vehicle vehicle in this.m_VehiclesInGarage)
+            {
+                if(vehicle.LicenseNumber == i_LicenseNumber)
+                {
+                    break;
+                }
 
+                i++;
+            }
+            return this.m_VehiclesDataInGarage[i].CustomerName;
+        }
         public bool CheckIfVehicleAlreadyInGarage(string i_LicenseNumber)
         {
             foreach(Vehicle vehicle in this.m_VehiclesInGarage)

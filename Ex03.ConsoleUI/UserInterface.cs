@@ -30,8 +30,10 @@ namespace Ex03.ConsoleUI
                         ShowVehiclesLicenseNumbers(i_Garage);
                         break;
                     case 3:
+                        ChangeCarStatus(i_Garage);
                         break;
                     case 4:
+                        InflateTireToMax(i_Garage);
                         break;
                     case 5:
                         break;
@@ -73,7 +75,13 @@ namespace Ex03.ConsoleUI
             i_Garage.CheckIfVehicleAlreadyInGarage(newVehicle.LicenseNumber);
             Console.WriteLine("Please enter model name: ");
             newVehicle.ModelName = Console.ReadLine();
+            Console.WriteLine("Please enter wheels manufacture name: ");
+            string manufactureName = Console.ReadLine();
 
+            foreach(Wheels wheel in newVehicle.Wheels)
+            {
+                wheel.ManufacturerName = manufactureName;
+            }
             switch(userSelection)
             {
                 case 1:
@@ -130,12 +138,46 @@ namespace Ex03.ConsoleUI
             CheckExceptions(ref userSelection, 1, 4);
             Console.WriteLine(Environment.NewLine);
             licenseNumbers = i_Garage.ShowLicenseNumberOfVehiclesInGarage(userSelection);
-            foreach (string item in licenseNumbers)
+            for(int i = 0; i < licenseNumbers.Count; i++)
             {
-                Console.WriteLine(item);
+                Console.WriteLine("{0} License number in garage: {1}",i, licenseNumbers[i]);
             }
         }
+        private static void ChangeCarStatus(Garage i_Garage)
+        {
+            string licenseNumber = GetValidLicenseNumberFromUser();
 
+            foreach (Vehicle vehicle in i_Garage.VehiclesInGarage)
+            {
+                int i = 0;
+                if(licenseNumber == vehicle.LicenseNumber)
+                {
+                    i_Garage.VehiclesDataInGarage[i].VehicleStatus = GetValidVehicleStatus();
+                    Console.WriteLine("Vehicle was found and his status is changed!");
+                    return;
+                }
+                i++;
+            }
+            Console.WriteLine("Vehicle was not found...");
+        }
+        private static void InflateTireToMax(Garage i_Garage)
+        {
+            string licenseNumber = GetValidLicenseNumberFromUser();
+
+            foreach (Vehicle vehicle in i_Garage.VehiclesInGarage)
+            {
+                if (licenseNumber == vehicle.LicenseNumber)
+                {
+                    for(int i = 0; i < vehicle.Wheels.Count; i++)
+                    {
+                        vehicle.Wheels[i].InflateTireToMax();
+                    }
+                    Console.WriteLine("Vehicle was found and his tires are inflated to max! ");
+                    return;
+                }
+            }
+            Console.WriteLine("Vehicle was not found...");
+        }
         private static string GetValidLicenseNumberFromUser()
         {
             while(true)
@@ -149,7 +191,24 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("Wrong input please use numbers only");
             }
         }
-
+        private static VehicleData.eVehicleStatus GetValidVehicleStatus()
+        {
+            StringBuilder menu = new StringBuilder(Environment.NewLine);
+            menu.Append(" Please Choose vehicle status" + Environment.NewLine);
+            menu.Append(" 1) inFIx" + Environment.NewLine);
+            menu.Append(" 2) Fixed" + Environment.NewLine);
+            menu.Append(" 3) Paid" + Environment.NewLine);
+            Console.WriteLine(menu);
+            while (true)
+            {
+                string vehicleStatus = Console.ReadLine();
+                if (Regex.IsMatch(vehicleStatus, @"^[1-3]{1}$"))
+                {
+                    return (VehicleData.eVehicleStatus)Enum.Parse(typeof(VehicleData.eVehicleStatus), vehicleStatus);
+                }
+                Console.WriteLine("Wrong input please enter numbers between 1 to 3");
+            }
+        } 
         private static bool GetIfTruckHasCapacity()
         {
             while(true)

@@ -60,6 +60,12 @@ namespace Ex03.GarageLogic
             }
         }
 
-
+        public override string ToString()
+        {
+            string vehicleData = string.Format(
+                "License number is: {0}," + " Model name is: {1}," + " Customer name is: {2},"
+                + "Wheels manufacture name and max air pressure: {3} {4}," + " "); // status in garage 
+            return base.ToString();
+        }
     }
 }
