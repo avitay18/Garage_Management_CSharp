@@ -36,10 +36,13 @@ namespace Ex03.ConsoleUI
                         InflateTireToMax(i_Garage);
                         break;
                     case 5:
+                        AddFuel(i_Garage);
                         break;
                     case 6:
+                        AddEnergy(i_Garage);
                         break;
                     case 7:
+                        DisplayVehicleData(i_Garage);
                         break;
                     case 8:
                         Environment.Exit(0);
@@ -67,6 +70,7 @@ namespace Ex03.ConsoleUI
             string licenseNumber = GetValidLicenseNumberFromUser();
             if(i_Garage.CheckIfVehicleAlreadyInGarage(licenseNumber))
             {
+                Console.WriteLine("Vehicle already in garage");
                 return;
             }
             VehicleData newCustomer = new VehicleData(GetValidFullName(), GetValidPhoneNumber(),VehicleData.eVehicleStatus.InFix);
@@ -88,20 +92,55 @@ namespace Ex03.ConsoleUI
                 case 2:
                     (newVehicle as Car).Color = GetValidCarColor();
                     (newVehicle as Car).Doors = GetValidDoorsAmount();
+
+                    foreach (Wheels wheel in newVehicle.Wheels)
+                    {
+                        wheel.MaxAirPressure = Car.sr_CarMaxAirPressure;
+                    }
+
+                    if (newVehicle.Engine is Fuel)
+                    {
+                        (newVehicle.Engine as Fuel).MaxFuel = Car.sr_CarMaxFuelCapacity;
+                    }
+                    else if (newVehicle.Engine is Electric)
+                    {
+                        (newVehicle.Engine as Electric).MaxEnergy = Car.sr_CarMaxElecticTime;
+                    }
                     break;
                 case 3:
                 case 4:
                     (newVehicle as Motorcycle).LicenseType = GetValidLicenseType();
                     (newVehicle as Motorcycle).EngineVolume = GetValidEngineVolume();
+
+                    foreach (Wheels wheel in newVehicle.Wheels)
+                    {
+                        wheel.MaxAirPressure = Motorcycle.sr_MotorcycleMaxAirPressure;
+                    }
+
+                    if (newVehicle.Engine is Fuel)
+                    {
+                        (newVehicle.Engine as Fuel).MaxFuel = Motorcycle.sr_MotorcycleMaxFuelCapacity;
+                    }
+                    else if (newVehicle.Engine is Electric)
+                    {
+                        (newVehicle.Engine as Electric).MaxEnergy = Motorcycle.sr_MotorcycleMaxElecticTime;
+                    }
                     break;
                 case 5:
                     (newVehicle as Truck).CargoVolume = GetValidCargoVolume();
                     (newVehicle as Truck).HasCapacity = GetIfTruckHasCapacity();
+                    (newVehicle.Engine as Fuel).MaxFuel = Truck.sr_TruckMaxFuelCapacity;
+
+                    foreach (Wheels wheel in newVehicle.Wheels)
+                    {
+                        wheel.MaxAirPressure = Truck.sr_TruckMaxAirPressure;
+                    }
                     break;
             }
 
             m_ValidInput = false;
             i_Garage.AddVehicleToGarage(newVehicle, newCustomer);
+            PressAnyKeyToContinue();
         } 
 
         public static void DisplayMenu()
@@ -122,6 +161,79 @@ namespace Ex03.ConsoleUI
             Console.WriteLine(menu);
         }
 
+        private static void DisplayVehicleData(Garage i_Garage)
+        {
+            string licenseNumber = GetValidLicenseNumberFromUser();
+            if(!i_Garage.CheckIfVehicleAlreadyInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not exist in the garage");
+                PressAnyKeyToContinue();
+                return;
+            }
+
+            Vehicle vehicle = i_Garage.ReturnVehicleByLicenseNumber(licenseNumber);
+
+            string vehicleData = string.Format(
+                "License number is: {0}, " + " Model name is: {1}, " + " Customer name is: {2}, " + Environment.NewLine
+                + "Wheels manufacture name: {3}, current air pressure: {4}, max air pressure: {5}, "
+                + Environment.NewLine + "energy percentage left: {6}, ",
+                vehicle.LicenseNumber,
+                vehicle.ModelName,
+                i_Garage.GetCustomerNameByLicense(licenseNumber),
+                vehicle.Wheels[0].ManufacturerName,
+                vehicle.Wheels[0].CurrentAirPressure,
+                vehicle.Wheels[0].MaxAirPressure,
+                vehicle.EnergyPercentageLeft);
+            if(vehicle is Car)
+            {
+                string carData = string.Format(
+                    "Car number of doors is: {0}, " + "Color is: {1}",
+                    (vehicle as Car).Doors,
+                    (vehicle as Car).Color);
+                if(vehicle.Engine is Fuel)
+                {
+                    string fuelData = string.Format("Fuel type is: {0}, ", (vehicle.Engine as Fuel).FuelType);
+                    Console.WriteLine(vehicleData + fuelData + carData);
+                }
+
+                if(vehicle.Engine is Electric)
+                {
+                    string electricData = string.Format("this car uses battery, ");
+                    Console.WriteLine(vehicleData + electricData + carData);
+                }
+            }
+
+            if(vehicle is Motorcycle)
+            {
+                string motorcycleData = string.Format(
+                    "Lisence type is: {0}, " + "Engine volume is: {1}",
+                    (vehicle as Motorcycle).LicenseType,
+                    (vehicle as Motorcycle).EngineVolume);
+                if(vehicle.Engine is Fuel)
+                {
+                    string fuelData = string.Format("Fuel type is: {0}, ", (vehicle.Engine as Fuel).FuelType);
+                    Console.WriteLine(vehicleData + fuelData + motorcycleData);
+                }
+
+                if(vehicle.Engine is Electric)
+                {
+                    string electricData = string.Format("this motorcycle uses battery, ");
+                    Console.WriteLine(vehicleData + electricData + motorcycleData);
+                }
+            }
+
+            if(vehicle is Truck)
+            {
+                string truckData = string.Format(
+                    "Cargo volume is: {0}, " + "truck has capacity: {1}",
+                    (vehicle as Truck).CargoVolume,
+                    (vehicle as Truck).HasCapacity);
+                    string fuelData = string.Format("Fuel type is: {0}, ", (vehicle.Engine as Fuel).FuelType);
+                    Console.WriteLine(vehicleData + fuelData + truckData);
+            }
+            PressAnyKeyToContinue();
+        }
+
         private static void ShowVehiclesLicenseNumbers(Garage i_Garage)
         {
             m_ValidInput = false;
@@ -140,8 +252,9 @@ namespace Ex03.ConsoleUI
             licenseNumbers = i_Garage.ShowLicenseNumberOfVehiclesInGarage(userSelection);
             for(int i = 0; i < licenseNumbers.Count; i++)
             {
-                Console.WriteLine("{0} License number in garage: {1}",i, licenseNumbers[i]);
+                Console.WriteLine("{0} License number in garage: {1}",i+1, licenseNumbers[i]);
             }
+            PressAnyKeyToContinue();
         }
         private static void ChangeCarStatus(Garage i_Garage)
         {
@@ -150,34 +263,153 @@ namespace Ex03.ConsoleUI
             foreach (Vehicle vehicle in i_Garage.VehiclesInGarage)
             {
                 int i = 0;
-                if(licenseNumber == vehicle.LicenseNumber)
+                if (licenseNumber == vehicle.LicenseNumber)
                 {
                     i_Garage.VehiclesDataInGarage[i].VehicleStatus = GetValidVehicleStatus();
-                    Console.WriteLine("Vehicle was found and his status is changed!");
+                    Console.WriteLine("Vehicle was found and his status is changed!" + Environment.NewLine);
                     return;
                 }
                 i++;
             }
-            Console.WriteLine("Vehicle was not found...");
+            Console.WriteLine("Vehicle was not found..." + Environment.NewLine);
+            PressAnyKeyToContinue();
         }
         private static void InflateTireToMax(Garage i_Garage)
         {
             string licenseNumber = GetValidLicenseNumberFromUser();
+            if(!i_Garage.CheckIfVehicleAlreadyInGarage(licenseNumber))
+            {
+                Console.WriteLine("vehicle was not found...");
+                return;
+            }
 
             foreach (Vehicle vehicle in i_Garage.VehiclesInGarage)
             {
                 if (licenseNumber == vehicle.LicenseNumber)
                 {
-                    for(int i = 0; i < vehicle.Wheels.Count; i++)
+                    for (int i = 0; i < vehicle.Wheels.Count; i++)
                     {
                         vehicle.Wheels[i].InflateTireToMax();
                     }
-                    Console.WriteLine("Vehicle was found and his tires are inflated to max! ");
-                    return;
+                    Console.WriteLine("vehicle was found and his tires are inflated to max! ");
                 }
             }
-            Console.WriteLine("Vehicle was not found...");
         }
+
+        private static void AddFuel(Garage i_Garage)
+        {
+            string licenseNumber = GetValidLicenseNumberFromUser();
+            if (!i_Garage.CheckIfVehicleAlreadyInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found in the garage...");
+                PressAnyKeyToContinue();
+                return;
+            }
+            float fuelToAdd = -1;
+            while (fuelToAdd <= 0)
+            {
+                m_ValidInput = false;
+                try
+                {
+                    Console.WriteLine("Please enter amount of fuel you would like to add: ");
+                    GetGoodFloatUserSelection(ref fuelToAdd);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("please enter a positive number bigger than 0" + Environment.NewLine);
+                }
+            }
+
+            foreach (Vehicle vehicle in i_Garage.VehiclesInGarage)
+            {
+
+                if (vehicle.LicenseNumber == licenseNumber)
+                {
+                    try
+                    {
+                        if (vehicle.Engine is Electric)
+                        {
+                            throw new ArgumentException();
+                        }
+
+                        vehicle.Engine.AddEnergy(fuelToAdd);
+                        vehicle.EnergyPercentageLeft = (vehicle.Engine as Fuel).CurrentFuel
+                                                       / (vehicle.Engine as Fuel).MaxFuel * 100;
+                    }
+                    catch (ValueOutOfRangeException e)
+                    {
+                        Console.Write(
+                            "Error: The number should be between " + e.MinValue + " to " + e.MaxValue
+                            + Environment.NewLine);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine("This is Fuel type car, you cannot charge its battery ");
+                        PressAnyKeyToContinue();
+                        return;
+                    }
+                }
+            }
+            PressAnyKeyToContinue();
+        }
+        private static void AddEnergy(Garage i_Garage)
+        {
+            string licenseNumber = GetValidLicenseNumberFromUser();
+            if(!i_Garage.CheckIfVehicleAlreadyInGarage(licenseNumber))
+            {
+                Console.WriteLine("Vehicle not found in the garage...");
+                PressAnyKeyToContinue();
+                return;
+            }
+            float energyToAdd = -1;
+            while(energyToAdd <= 0)
+            {
+                m_ValidInput = false;
+                try
+                {
+                    Console.WriteLine("Please enter amount of energy you would like to add: ");
+                    GetGoodFloatUserSelection(ref energyToAdd);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("please enter a positive number bigger than 0" + Environment.NewLine);
+                }
+            }
+
+            foreach(Vehicle vehicle in i_Garage.VehiclesInGarage)
+            {
+
+                if(vehicle.LicenseNumber == licenseNumber)
+                {
+                    try
+                    {
+                        if(vehicle.Engine is Fuel)
+                        {
+                            throw new ArgumentException();
+                        }
+
+                        vehicle.Engine.AddEnergy(energyToAdd);
+                        vehicle.EnergyPercentageLeft = (vehicle.Engine as Electric).CurrentEnergy
+                                                       / (vehicle.Engine as Electric).MaxEnergy * 100;
+                    }
+                    catch(ValueOutOfRangeException e)
+                    {
+                        Console.Write(
+                            "Error: The number should be between " + e.MinValue + " to " + e.MaxValue
+                            + Environment.NewLine);
+                    }
+                    catch(ArgumentException)
+                    {
+                        Console.WriteLine("This is Electic type car, you cannot add fuel to it ");
+                        PressAnyKeyToContinue();
+                        return;
+                    }
+                }
+            }
+            PressAnyKeyToContinue();
+        }
+            
+        
         private static string GetValidLicenseNumberFromUser()
         {
             while(true)
@@ -195,14 +427,14 @@ namespace Ex03.ConsoleUI
         {
             StringBuilder menu = new StringBuilder(Environment.NewLine);
             menu.Append(" Please Choose vehicle status" + Environment.NewLine);
-            menu.Append(" 1) inFIx" + Environment.NewLine);
-            menu.Append(" 2) Fixed" + Environment.NewLine);
-            menu.Append(" 3) Paid" + Environment.NewLine);
+            menu.Append(" 0) inFIx" + Environment.NewLine);
+            menu.Append(" 1) Fixed" + Environment.NewLine);
+            menu.Append(" 2) Paid" + Environment.NewLine);
             Console.WriteLine(menu);
             while (true)
             {
                 string vehicleStatus = Console.ReadLine();
-                if (Regex.IsMatch(vehicleStatus, @"^[1-3]{1}$"))
+                if (Regex.IsMatch(vehicleStatus, @"^[0-2]{1}$"))
                 {
                     return (VehicleData.eVehicleStatus)Enum.Parse(typeof(VehicleData.eVehicleStatus), vehicleStatus);
                 }
@@ -236,6 +468,11 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        private static void PressAnyKeyToContinue()
+        {
+            Console.WriteLine("Press any key to go back to menu" + Environment.NewLine);
+            Console.ReadKey();
+        }
         private static string GetValidFullName()
         {
             Console.WriteLine("Please Enter your Full Name: ");
@@ -304,7 +541,6 @@ namespace Ex03.ConsoleUI
                 Console.WriteLine("Wrong input please enter numbers between 1 to 4");
             }
         }
-
         private static Car.eDoors GetValidDoorsAmount()
         {
             StringBuilder doors = new StringBuilder(Environment.NewLine);
@@ -341,6 +577,15 @@ namespace Ex03.ConsoleUI
             return true;
         }
 
+        private static bool GetGoodFloatUserSelection(ref float i_UserSelection)
+        {
+            if (!float.TryParse(Console.ReadLine(), out i_UserSelection))
+            {
+                throw new FormatException();
+            }
+            
+            return true;
+        }
         private static void CheckExceptions(ref int i_UserSelection, int i_MinValue, int i_MaxValue)
         {
             while (!m_ValidInput)
@@ -362,4 +607,3 @@ namespace Ex03.ConsoleUI
 
     }
 }
-

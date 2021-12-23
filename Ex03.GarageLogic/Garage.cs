@@ -36,7 +36,7 @@ namespace Ex03.GarageLogic
             this.m_VehiclesInGarage.Add(newVehicle);
             this.m_VehiclesDataInGarage.Add(newCustomer);
         }
-        internal string GetCustomerNameByLicense(string i_LicenseNumber)
+        public string GetCustomerNameByLicense(string i_LicenseNumber)
         {
             int i = 0;
             foreach(Vehicle vehicle in this.m_VehiclesInGarage)
@@ -57,7 +57,6 @@ namespace Ex03.GarageLogic
                 int i = 0;
                 if(vehicle.LicenseNumber == i_LicenseNumber)
                 {
-                    Console.WriteLine("Vehicle Already In Garage!!!");
                     this.m_VehiclesDataInGarage[i].VehicleStatus = VehicleData.eVehicleStatus.InFix;
                     return true;
                 }
@@ -68,6 +67,18 @@ namespace Ex03.GarageLogic
             return false;
         }
 
+        public Vehicle ReturnVehicleByLicenseNumber(string i_LicenseNumber)
+        {
+            foreach (Vehicle vehicle in m_VehiclesInGarage)
+            {
+                if (i_LicenseNumber == vehicle.LicenseNumber)
+                {
+                    return vehicle;
+                }
+            }
+
+            return null;
+        }
         public List<string> ShowLicenseNumberOfVehiclesInGarage(int userSelection)
         {
             List<string> licenseNumbersToShow = new List<string>();

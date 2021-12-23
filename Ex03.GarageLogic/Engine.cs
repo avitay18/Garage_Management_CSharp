@@ -8,6 +8,6 @@ namespace Ex03.GarageLogic
 {
     public abstract class Engine
     {
-        public abstract void AddEnergy(float i_FuelToAdd);
+        public abstract void AddEnergy(float i_BatteryTimeToAdd);
     }
 }

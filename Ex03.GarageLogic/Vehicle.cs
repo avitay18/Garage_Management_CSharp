@@ -33,7 +33,19 @@ namespace Ex03.GarageLogic
                 this.m_ModelName = value;
             }
         }
-        public string LicenseNumber {
+        public float EnergyPercentageLeft
+        {
+            get
+            {
+                return this.m_EnergyPercentageLeft;
+            }
+            set
+            {
+                this.m_EnergyPercentageLeft = value;
+            }
+        }
+        public string LicenseNumber
+        {
             get
             {
                 return this.m_LicenseNumber;
@@ -60,12 +72,5 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public override string ToString()
-        {
-            string vehicleData = string.Format(
-                "License number is: {0}," + " Model name is: {1}," + " Customer name is: {2},"
-                + "Wheels manufacture name and max air pressure: {3} {4}," + " "); // status in garage 
-            return base.ToString();
-        }
     }
 }

@@ -9,19 +9,29 @@ namespace Ex03.GarageLogic
     public class Wheels
     {
         private readonly string? m_ManufacturerName;
-        private float? m_CurrentAirPressure;
+        private float m_CurrentAirPressure;
         private readonly float m_MaxAirPressure;
 
         public Wheels(float i_MaxAirPressure)
         {
-            this.m_CurrentAirPressure = null;
+            this.m_CurrentAirPressure = 0;
             this.m_ManufacturerName = null;
             this.m_MaxAirPressure = i_MaxAirPressure;
         }
         
         public string ManufacturerName { get; set; }
 
-        public float CurrentAirPressure { get; set; }
+        public float CurrentAirPressure
+        {
+            get
+            {
+                return this.m_CurrentAirPressure;
+            }
+            set
+            {
+                this.m_CurrentAirPressure = value;
+            }
+        }
 
         public float MaxAirPressure { get; set; }
 

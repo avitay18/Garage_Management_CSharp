@@ -9,7 +9,7 @@ namespace Ex03.GarageLogic
     public class Electric : Engine
     {
         private float m_CurrentEnergy;
-        private readonly float m_MaxEnergy;
+        private float m_MaxEnergy;
 
         public Electric(float i_CurrentEnergy, float MaxEnergy)
         {
@@ -17,17 +17,38 @@ namespace Ex03.GarageLogic
             this.m_MaxEnergy = MaxEnergy;
         }
 
-        public float CurrentEnergy { get; set; }
-        public float MaxEnergy { get; set; }
-        public override void AddEnergy(float i_FuelToAdd)
+        public float CurrentEnergy
         {
-            if (this.m_CurrentEnergy + i_FuelToAdd <= this.m_MaxEnergy)
+            get
             {
-                this.m_CurrentEnergy += i_FuelToAdd;
+                return this.m_CurrentEnergy;
+            }
+            set
+            {
+                this.m_CurrentEnergy = value;
+            }
+        }
+        public float MaxEnergy
+        {
+            get
+            {
+                return this.m_MaxEnergy;
+            }
+            set
+            {
+                this.m_MaxEnergy = value;
+            }
+        }
+        public override void AddEnergy(float i_BatteryTimeToAdd)
+        {
+            if (this.m_CurrentEnergy + i_BatteryTimeToAdd <= this.m_MaxEnergy)
+            {
+                this.m_CurrentEnergy += i_BatteryTimeToAdd;
+                
             }
             else
             {
-                //throw exception
+                throw new ValueOutOfRangeException(new Exception(), 0, MaxEnergy - CurrentEnergy);
             }
         }
     }
