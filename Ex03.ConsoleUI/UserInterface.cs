@@ -176,14 +176,14 @@ namespace Ex03.ConsoleUI
             string vehicleData = string.Format(
                 "License number is: {0}, " + " Model name is: {1}, " + " Customer name is: {2}, " + Environment.NewLine
                 + "Wheels manufacture name: {3}, current air pressure: {4}, max air pressure: {5}, "
-                + Environment.NewLine + "energy percentage left: {6}, ",
+                + Environment.NewLine + "energy percentage left: {6}%, ",
                 vehicle.LicenseNumber,
                 vehicle.ModelName,
                 i_Garage.GetCustomerNameByLicense(licenseNumber),
                 vehicle.Wheels[0].ManufacturerName,
                 vehicle.Wheels[0].CurrentAirPressure,
                 vehicle.Wheels[0].MaxAirPressure,
-                vehicle.EnergyPercentageLeft);
+                (float)Math.Round(vehicle.EnergyPercentageLeft, 2));
             if(vehicle is Car)
             {
                 string carData = string.Format(
@@ -252,7 +252,7 @@ namespace Ex03.ConsoleUI
             licenseNumbers = i_Garage.ShowLicenseNumberOfVehiclesInGarage(userSelection);
             for(int i = 0; i < licenseNumbers.Count; i++)
             {
-                Console.WriteLine("{0} License number in garage: {1}",i+1, licenseNumbers[i]);
+                Console.WriteLine("{0}. vehicle plate number in garage: {1}",i+1, licenseNumbers[i]);
             }
             PressAnyKeyToContinue();
         }
@@ -294,6 +294,7 @@ namespace Ex03.ConsoleUI
                     Console.WriteLine("vehicle was found and his tires are inflated to max! ");
                 }
             }
+            PressAnyKeyToContinue();
         }
 
         private static void AddFuel(Garage i_Garage)
@@ -344,7 +345,7 @@ namespace Ex03.ConsoleUI
                     }
                     catch (ArgumentException)
                     {
-                        Console.WriteLine("This is Fuel type car, you cannot charge its battery ");
+                        Console.WriteLine("This is Electric type car, you cannot refuel it ");
                         PressAnyKeyToContinue();
                         return;
                     }
@@ -400,7 +401,7 @@ namespace Ex03.ConsoleUI
                     }
                     catch(ArgumentException)
                     {
-                        Console.WriteLine("This is Electic type car, you cannot add fuel to it ");
+                        Console.WriteLine("This is Fuel type car, you cannot charge it ");
                         PressAnyKeyToContinue();
                         return;
                     }
