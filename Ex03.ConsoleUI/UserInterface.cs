@@ -59,10 +59,10 @@ namespace Ex03.ConsoleUI
             Console.Clear();
             StringBuilder vehicleToAdd = new StringBuilder(Environment.NewLine);
             vehicleToAdd.Append(" Please enter which vehicle you would like to enter the garage" + Environment.NewLine);
-            vehicleToAdd.Append(" 1) ElectricCar" + Environment.NewLine);
-            vehicleToAdd.Append(" 2) FuelCar" + Environment.NewLine);
-            vehicleToAdd.Append(" 3) ElectricMotorcycle" + Environment.NewLine);
-            vehicleToAdd.Append(" 4) FuelMotorcycle" + Environment.NewLine);
+            vehicleToAdd.Append(" 1) Electric Car" + Environment.NewLine);
+            vehicleToAdd.Append(" 2) Fuel Car" + Environment.NewLine);
+            vehicleToAdd.Append(" 3) Electric Motorcycle" + Environment.NewLine);
+            vehicleToAdd.Append(" 4) Fuel Motorcycle" + Environment.NewLine);
             vehicleToAdd.Append(" 5) Truck" + Environment.NewLine);
             Console.WriteLine(vehicleToAdd);
             CheckExceptions(ref userSelection, 1, 5);
@@ -439,7 +439,7 @@ namespace Ex03.ConsoleUI
                 {
                     return (VehicleData.eVehicleStatus)Enum.Parse(typeof(VehicleData.eVehicleStatus), vehicleStatus);
                 }
-                Console.WriteLine("Wrong input please enter numbers between 1 to 3");
+                Console.WriteLine("Wrong input please enter numbers between 0 to 2");
             }
         } 
         private static bool GetIfTruckHasCapacity()
